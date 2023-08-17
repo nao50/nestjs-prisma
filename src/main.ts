@@ -1,7 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { PrismaClientExceptionFilter } from './filter/prisma-client-exception.filter';
 
 import * as fs from 'fs';
 import { dump } from 'js-yaml';
@@ -23,6 +24,9 @@ async function bootstrap() {
   fs.writeFileSync('./openapi-spec.yaml', dump(document, {}));
 
   SwaggerModule.setup('api', app, document);
+
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   await app.listen(3000);
 }
