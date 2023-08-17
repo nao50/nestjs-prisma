@@ -1,0 +1,175 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+  /articles:
+    post:
+      operationId: ArticlesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArticleDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEntity'
+      tags: &ref_0
+        - articles
+    get:
+      operationId: ArticlesController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleEntity'
+      tags: *ref_0
+  /articles/drafts:
+    get:
+      operationId: ArticlesController_findDrafts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleEntity'
+      tags: *ref_0
+  /articles/{id}:
+    get:
+      operationId: ArticlesController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEntity'
+      tags: *ref_0
+    patch:
+      operationId: ArticlesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateArticleDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEntity'
+      tags: *ref_0
+    delete:
+      operationId: ArticlesController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEntity'
+      tags: *ref_0
+info:
+  title: Median
+  description: The Median API description
+  version: '0.1'
+  contact: {}
+tags:
+  - name: example
+    description: ''
+servers: []
+components:
+  schemas:
+    CreateArticleDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        body:
+          type: string
+        published:
+          type: boolean
+          default: false
+      required:
+        - title
+        - body
+    ArticleEntity:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        body:
+          type: string
+        published:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - title
+        - body
+        - published
+        - createdAt
+        - updatedAt
+    UpdateArticleDto:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        body:
+          type: string
+        published:
+          type: boolean
+          default: false
