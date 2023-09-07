@@ -61,7 +61,7 @@ paths:
           required: true
           in: path
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: ''
@@ -108,6 +108,120 @@ paths:
               schema:
                 $ref: '#/components/schemas/ArticleEntity'
       tags: *ref_0
+  /users:
+    post:
+      operationId: UsersController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+      tags: &ref_1
+        - users
+    get:
+      operationId: UsersController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserEntity'
+      tags: *ref_1
+      security:
+        - bearer: []
+  /users/{id}:
+    get:
+      operationId: UsersController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+      tags: *ref_1
+      security:
+        - bearer: []
+    patch:
+      operationId: UsersController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+      tags: *ref_1
+      security:
+        - bearer: []
+    delete:
+      operationId: UsersController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+      tags: *ref_1
+      security:
+        - bearer: []
+  /auth/login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEntity'
+      tags:
+        - auth
 info:
   title: Median
   description: The Median API description
@@ -118,6 +232,11 @@ tags:
     description: ''
 servers: []
 components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
   schemas:
     CreateArticleDto:
       type: object
@@ -134,6 +253,27 @@ components:
       required:
         - title
         - body
+    UserEntity:
+      type: object
+      properties:
+        id:
+          type: number
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - name
+        - email
     ArticleEntity:
       type: object
       properties:
@@ -154,6 +294,11 @@ components:
         updatedAt:
           format: date-time
           type: string
+        authorId:
+          type: number
+          nullable: true
+        author:
+          $ref: '#/components/schemas/UserEntity'
       required:
         - id
         - title
@@ -173,3 +318,42 @@ components:
         published:
           type: boolean
           default: false
+    CreateUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - password
+    UpdateUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    AuthEntity:
+      type: object
+      properties:
+        accessToken:
+          type: string
+      required:
+        - accessToken
